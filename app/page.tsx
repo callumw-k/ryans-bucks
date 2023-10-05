@@ -1,20 +1,27 @@
 import { Card } from "@/components/card";
 import { Score } from "@/components/score";
 import { supabase } from "@/lib/supabase";
+import { cache } from "react";
 
-const fetchPubs = async () => {
+export const dynamic = "force-dynamic";
+export const revalidate = 0;
+
+const fetchPubs = cache(async () => {
   return await supabase
     .from("Pubs")
     .select(`*, Scores(*)`)
     .eq("Scores.team_id", 2);
-};
+});
+
+const fetchPeople = cache(async () => {
+  return await supabase.from("Persons").select().eq("team_id", 2);
+});
 
 export default async function Home() {
-  const { data: pubs } = await fetchPubs();
-  const { data: personsData } = await supabase
-    .from("Persons")
-    .select()
-    .eq("team_id", 2);
+  const [{ data: pubs }, { data: personsData }] = await Promise.all([
+    fetchPubs(),
+    fetchPeople(),
+  ]);
 
   if (!pubs || !personsData) {
     return <p>error</p>;
@@ -49,7 +56,7 @@ export default async function Home() {
   return (
     <main>
       <Score allScores={allScores} />
-      <div className="space-y-8 max-w-sm mx-auto">
+      <div className="space-y-8 ">
         {mappedData.map((value) => (
           <Card pub={value.pub} scores={value.scores} key={value.pub.id} />
         ))}

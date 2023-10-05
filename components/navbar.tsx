@@ -1,9 +1,8 @@
-import { link } from "fs";
 import Link from "next/link";
 
 const links = [
   { name: "Scorecard", href: "/" },
-  { name: "Rules", href: "/ruels" },
+  { name: "Rules", href: "/rules" },
   { name: "Leaderboard", href: "/leaderboard" },
 ];
 export function Navbar() {

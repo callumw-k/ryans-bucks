@@ -15,7 +15,7 @@ export default function RootLayout({
 }) {
   return (
     <html lang="en">
-      <body className={`${pt_serif.className} px-4`}>
+      <body className={`${pt_serif.className} px-4 mx-auto max-w-5xl`}>
         <Navbar />
         {children}
       </body>
