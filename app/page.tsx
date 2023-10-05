@@ -5,6 +5,7 @@ import { cache } from "react";
 
 export const dynamic = "force-dynamic";
 export const revalidate = 0;
+export const runtime = "edge";
 
 const fetchPubs = cache(async () => {
   return await supabase
