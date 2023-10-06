@@ -9,21 +9,52 @@ export type Json =
 export interface Database {
   public: {
     Tables: {
+      Drinks: {
+        Row: {
+          id: number
+          name: string
+          par: number
+          pub_id: number
+        }
+        Insert: {
+          id?: number
+          name: string
+          par: number
+          pub_id: number
+        }
+        Update: {
+          id?: number
+          name?: string
+          par?: number
+          pub_id?: number
+        }
+        Relationships: [
+          {
+            foreignKeyName: "Drinks_pub_id_fkey"
+            columns: ["pub_id"]
+            referencedRelation: "Pubs"
+            referencedColumns: ["id"]
+          }
+        ]
+      }
       Persons: {
         Row: {
           id: number
           name: string
           team_id: number
+          username: string | null
         }
         Insert: {
           id?: number
           name: string
           team_id: number
+          username?: string | null
         }
         Update: {
           id?: number
           name?: string
           team_id?: number
+          username?: string | null
         }
         Relationships: [
           {
@@ -36,19 +67,16 @@ export interface Database {
       }
       Pubs: {
         Row: {
-          drink: string | null
           hidden: boolean
           id: number
           name: string
         }
         Insert: {
-          drink?: string | null
           hidden?: boolean
           id?: number
           name: string
         }
         Update: {
-          drink?: string | null
           hidden?: boolean
           id?: number
           name?: string
@@ -57,6 +85,7 @@ export interface Database {
       }
       Scores: {
         Row: {
+          drink_id: number | null
           id: number
           person_id: number
           pub_id: number
@@ -64,6 +93,7 @@ export interface Database {
           team_id: number
         }
         Insert: {
+          drink_id?: number | null
           id?: number
           person_id: number
           pub_id: number
@@ -71,6 +101,7 @@ export interface Database {
           team_id: number
         }
         Update: {
+          drink_id?: number | null
           id?: number
           person_id?: number
           pub_id?: number
@@ -78,6 +109,12 @@ export interface Database {
           team_id?: number
         }
         Relationships: [
+          {
+            foreignKeyName: "Scores_drink_id_fkey"
+            columns: ["drink_id"]
+            referencedRelation: "Drinks"
+            referencedColumns: ["id"]
+          },
           {
             foreignKeyName: "Scores_person_id_fkey"
             columns: ["person_id"]

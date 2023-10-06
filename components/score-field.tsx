@@ -4,12 +4,56 @@ import { Tables } from "@/database-helpers.types";
 import { supabase } from "@/lib/supabase";
 import { ScoreWithName } from "./card";
 
-export const ScoreField = (props: { score: ScoreWithName; pub_id: number }) => {
+export const Field = (props: {
+  title: string;
+  value?: number;
+  titleClass?: string;
+  inverse?: boolean;
+}) => {
+  return (
+    <div className="grid gap-[0.75rem] grid-cols-1">
+      <p className={`m-0 italic text-center ${props.titleClass ?? ""}`}>
+        {props.title}
+      </p>
+      <div
+        className={`border ${props.inverse ? "border-none" : "border-black"} ${
+          props.inverse ? "bg-black" : "bg-none"
+        } py-2 px-4 text-center min-w-[3.25rem] min-h-[2.625rem]`}
+      >
+        <p
+          className={`m-0 ${props.inverse ? "text-white" : "text-black"} ${
+            props.inverse && "font-[700]"
+          }`}
+        >
+          {props.value}
+        </p>
+      </div>
+    </div>
+  );
+};
+
+export const ScoreField = (props: {
+  score: ScoreWithName;
+  pub_id: number;
+  team_id: number;
+  drink_id: number;
+}) => {
   const [player, setPlayer] = useState({
     name: props.score.name,
     score: props.score.score,
     score_id: props.score.id,
   });
+
+  const updateScore = async (score: number) => {
+    await supabase.from("Scores").upsert({
+      score,
+      team_id: props.team_id,
+      pub_id: props.pub_id,
+      person_id: props.score.person_id,
+      drink_id: props.drink_id,
+      ...(player.score_id && { id: player.score_id }),
+    });
+  };
 
   useEffect(() => {
     const channel = supabase
@@ -61,10 +105,22 @@ export const ScoreField = (props: { score: ScoreWithName; pub_id: number }) => {
 
   return (
     <div className="grid gap-[0.75rem] grid-cols-1">
-      <p className="m-0 italic">{player.name}</p>
-      <div className="border border-black py-2 px-4 text-center min-w-[3.25rem] min-h-[2.625rem]">
-        <p className="m-0">{player.score}</p>
-      </div>
+      <p className={`m-0 italic text-center`}>{player.name}</p>
+      <input
+        value={player.score}
+        onChange={(e) => {
+          const newScore = e.target.value ? parseInt(e.target.value) : 0;
+          setPlayer((player) => ({
+            ...player,
+            score: newScore,
+          }));
+        }}
+        onBlur={(e) => {
+          const newScore = e.target.value ? parseInt(e.target.value) : 0;
+          updateScore(newScore);
+        }}
+        className={`border border-black py-2 px-4 text-center min-w-[3.25rem] max-w-[3.25rem] min-h-[2.625rem]`}
+      ></input>
     </div>
   );
 };

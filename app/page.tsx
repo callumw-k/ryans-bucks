@@ -2,35 +2,51 @@ import { Card } from "@/components/card";
 import { Score } from "@/components/score";
 import { supabase } from "@/lib/supabase";
 import { cache } from "react";
+import { cookies } from "next/headers";
+import { Tables } from "@/database-helpers.types";
+import { NextRequest } from "next/server";
+import { redirect } from "next/navigation";
 
 export const dynamic = "force-dynamic";
 export const revalidate = 0;
 export const runtime = "edge";
 
-const fetchPubs = cache(async () => {
+const fetchPubs = cache(async (team_id: number) => {
   return await supabase
-    .from("Pubs")
-    .select(`*, Scores(*)`)
-    .eq("Scores.team_id", 2);
+    .from("Drinks")
+    .select(`*, Scores(*), Pubs(*)`)
+    .eq("Scores.team_id", team_id);
 });
 
-const fetchPeople = cache(async () => {
-  return await supabase.from("Persons").select().eq("team_id", 2);
+const fetchPeople = cache(async (team_id: number) => {
+  return await supabase.from("Persons").select().eq("team_id", team_id);
 });
 
 export default async function Home() {
+  //handle auth
+  const cookieStore = cookies();
+  const user = cookieStore.get("user")?.value;
+  const parsedUser = user ? (JSON.parse(user) as Tables<"Persons">) : null;
+
+  if (!parsedUser) {
+    redirect("/enter");
+  }
+
   const [{ data: pubs }, { data: personsData }] = await Promise.all([
-    fetchPubs(),
-    fetchPeople(),
+    fetchPubs(parsedUser.team_id),
+    fetchPeople(parsedUser.team_id),
   ]);
 
   if (!pubs || !personsData) {
     return <p>error</p>;
   }
 
-  const mappedData = pubs.map((pub) => {
+  const newMappedData = pubs.map((value) => {
     const mappedScores = personsData?.map((person) => {
-      const scores = pub.Scores.find((score) => score.person_id === person.id);
+      const scores = value.Scores.find(
+        (score) => score.person_id === person.id,
+      );
+
       return {
         ...scores,
         name: person.name,
@@ -38,28 +54,30 @@ export default async function Home() {
         team_id: person.team_id,
       };
     });
-
     return {
-      pub: {
-        id: pub.id,
-        name: pub.name,
-        drink: pub.drink,
-        hidden: pub.hidden,
+      drink: {
+        id: value.id,
+        name: value.name,
+        par: value.par,
       },
+      pub: value.Pubs!,
       scores: mappedScores,
     };
   });
 
-  const allScores = mappedData
-    .map((value) => value.scores)
-    .flatMap((value) => value);
+  const allScores = pubs.map((value) => value.Scores).flatMap((value) => value);
 
   return (
     <main>
-      <Score allScores={allScores} />
-      <div className="space-y-8 ">
-        {mappedData.map((value) => (
-          <Card pub={value.pub} scores={value.scores} key={value.pub.id} />
+      <Score team_id={parsedUser.team_id} allScores={allScores} />
+      <div className="space-y-8 overflow-x-auto mb-11">
+        {newMappedData.map((value) => (
+          <Card
+            pub={value.pub}
+            drink={value.drink}
+            scores={value.scores}
+            key={value.drink.id}
+          />
         ))}
       </div>
     </main>

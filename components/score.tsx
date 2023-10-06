@@ -1,16 +1,21 @@
 "use client";
 import { Tables } from "@/database-helpers.types";
 import { supabase } from "@/lib/supabase";
-import { useEffect, useMemo, useState } from "react";
-import { ScoreWithName } from "./card";
+import { cache, useEffect, useMemo, useState } from "react";
 
-const computeScore = (allScores: ScoreWithName[]): number => {
-  return allScores.reduce((total, score) => total + (score.score ?? 0), 0);
+const computeScore = (allScores: Tables<"Scores">[]): number => {
+  let totalScore = 0;
+  allScores.forEach((score) => {
+    totalScore += score.score;
+  });
+  return totalScore;
 };
 
-export function Score(props: { allScores: ScoreWithName[] }) {
+export function Score(props: {
+  allScores: Tables<"Scores">[];
+  team_id: number;
+}) {
   const [score, setScore] = useState(computeScore(props.allScores));
-  const cachedScores = useMemo(() => props.allScores, [props.allScores]);
 
   useEffect(() => {
     const channel = supabase
@@ -22,16 +27,15 @@ export function Score(props: { allScores: ScoreWithName[] }) {
           schema: "public",
           table: "Scores",
         },
-        (payload) => {
-          const newScore = payload.new as Tables<"Scores">;
-          const newScoreData = cachedScores.map((value) => {
-            if (value.id === newScore.id) {
-              return { ...value, score: newScore.score };
-            }
-            return value;
-          });
-          console.debug(newScoreData);
-          setScore(computeScore(newScoreData));
+        async () => {
+          const { data } = await supabase
+            .from("Scores")
+            .select()
+            .eq("team_id", props.team_id);
+
+          if (!data) return;
+
+          setScore(computeScore(data));
         },
       )
       .subscribe();
@@ -39,7 +43,7 @@ export function Score(props: { allScores: ScoreWithName[] }) {
     return () => {
       supabase.removeChannel(channel);
     };
-  }, [cachedScores]);
+  }, [props.team_id]);
   return (
     <div className="my-11 px-4 text-center text-3xl">
       <h1 className="font-sans">Score: {score}</h1>

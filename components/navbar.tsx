@@ -7,11 +7,7 @@ const links = [
 ];
 export function Navbar(props: { className?: string }) {
   return (
-    <header
-      className={
-        "border-y border-[rgba(0,0,0,51%)] py-1 mt-7" + props.className
-      }
-    >
+    <header className={"border-y border-[rgba(0,0,0,51%)] py-1 mt-7"}>
       <nav className="border-y border-black">
         <ul className="flex justify-between my-2">
           {links.map((link) => (
