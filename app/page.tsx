@@ -15,6 +15,7 @@ const fetchPubs = cache(async (team_id: number) => {
   return await supabase
     .from("Drinks")
     .select(`*, Scores(*), Pubs(*)`)
+    .order("id", { ascending: true })
     .eq("Scores.team_id", team_id);
 });
 

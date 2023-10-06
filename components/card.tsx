@@ -21,7 +21,7 @@ export const Card = (props: CardProps) => {
 
   useEffect(() => {
     const channel = supabase
-      .channel(`realtime_pubs_${props.pub.id}`)
+      .channel(`realtime_pubs_${props.pub.id}_${props.drink.id}`)
       .on(
         "postgres_changes",
         {
@@ -38,7 +38,7 @@ export const Card = (props: CardProps) => {
     return () => {
       supabase.removeChannel(channel);
     };
-  }, [pub, setPub, props.pub.id]);
+  }, [pub, setPub, props.pub.id, props.drink.id]);
 
   return (
     <div className="border-y border-y-black  px-[0.375rem] py-4 ">
@@ -49,29 +49,27 @@ export const Card = (props: CardProps) => {
       )}
       {!pub.hidden && (
         <div className="flex justify-between items-center">
-          <div className="space-y-2">
+          <div className="space-y-2 mr-2">
             <h2 className="m-0 text-2xl italic">{pub.name}</h2>
             <hr className="w-10 bg-black h-[2px]" />
             <p>{props.drink.name}</p>
           </div>
-          <div>
-            <div className="flex gap-4 mt-3">
-              <Field
-                inverse
-                titleClass="font-[700]"
-                title="Par"
-                value={props.drink.par}
+          <div className="flex gap-4 mt-3 flex-shrink-0">
+            <Field
+              inverse
+              titleClass="font-[700]"
+              title="Par"
+              value={props.drink.par}
+            />
+            {props.scores.map((score) => (
+              <ScoreField
+                pub_id={props.pub.id}
+                key={score.name}
+                score={score}
+                team_id={score.team_id}
+                drink_id={props.drink.id}
               />
-              {props.scores.map((score) => (
-                <ScoreField
-                  pub_id={props.pub.id}
-                  key={score.name}
-                  score={score}
-                  team_id={score.team_id}
-                  drink_id={props.drink.id}
-                />
-              ))}
-            </div>
+            ))}
           </div>
         </div>
       )}

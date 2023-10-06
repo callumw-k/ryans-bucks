@@ -40,7 +40,7 @@ export const ScoreField = (props: {
 }) => {
   const [player, setPlayer] = useState({
     name: props.score.name,
-    score: props.score.score,
+    score: props.score.score ?? "",
     score_id: props.score.id,
   });
 
@@ -55,9 +55,20 @@ export const ScoreField = (props: {
     });
   };
 
+  const deleteScore = async () => {
+    const score_id = player.score_id;
+    if (score_id) {
+      await supabase.from("Scores").delete().eq("id", score_id);
+    }
+  };
+
   useEffect(() => {
     const channel = supabase
-      .channel(`realtime_scores_${props.pub_id}_${props.score.person_id}`)
+      .channel(
+        `realtime_scores_${props.pub_id}_${props.score.person_id}_${
+          player.score_id ?? ""
+        }_${props.drink_id}`,
+      )
       .on(
         `postgres_changes`,
         {
@@ -74,7 +85,7 @@ export const ScoreField = (props: {
           ) {
             setPlayer((player) => ({
               name: player.name,
-              score: undefined,
+              score: "",
               score_id: undefined,
             }));
             return;
@@ -96,6 +107,7 @@ export const ScoreField = (props: {
     };
   }, [
     player.score_id,
+    props.drink_id,
     props.pub_id,
     props.score.id,
     props.score.name,
@@ -109,15 +121,19 @@ export const ScoreField = (props: {
       <input
         value={player.score}
         onChange={(e) => {
-          const newScore = e.target.value ? parseInt(e.target.value) : 0;
+          const newScore = e.target.value ? parseInt(e.target.value) : "";
           setPlayer((player) => ({
             ...player,
             score: newScore,
           }));
         }}
         onBlur={(e) => {
-          const newScore = e.target.value ? parseInt(e.target.value) : 0;
-          updateScore(newScore);
+          const newScore = e.target.value;
+          if (newScore) {
+            updateScore(parseInt(newScore));
+            return;
+          }
+          deleteScore();
         }}
         className={`border border-black py-2 px-4 text-center min-w-[3.25rem] max-w-[3.25rem] min-h-[2.625rem]`}
       ></input>
