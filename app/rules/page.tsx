@@ -15,8 +15,8 @@ export default function RulesPage() {
           Failure to finish drink. <br /> <strong>+2</strong>
         </li>
         <li>
-          Wetting a green (going to the toilet) on a water hazard. <br />{" "}
-          <strong>+2</strong>
+          Wetting a green (going to the toilet) on a water hazard. (Freight &
+          Renard) <br /> <strong>+2</strong>
         </li>
         <li>
           Dropping a glass. <br /> <strong>+3</strong>
