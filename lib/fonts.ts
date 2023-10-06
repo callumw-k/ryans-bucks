@@ -5,10 +5,13 @@ export const pt_serif = PT_Serif({
   style: ["normal", "italic"],
   subsets: ["latin"],
   variable: "--font-pt-serif",
+  display: "swap",
+  preload: true,
 });
 export const rampart_one = Rampart_One({
   weight: "400",
   subsets: ["latin"],
+  variable: "--font-rampart-one",
   preload: true,
-  display: "auto",
+  display: "swap",
 });

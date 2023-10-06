@@ -1,10 +1,8 @@
 "use client";
 import { Tables } from "@/database-helpers.types";
-import { rampart_one } from "@/lib/fonts";
 import { supabase } from "@/lib/supabase";
 import { useEffect, useMemo, useState } from "react";
-import { CardProps, ScoreWithName } from "./card";
-import { publicDecrypt } from "crypto";
+import { ScoreWithName } from "./card";
 
 const computeScore = (allScores: ScoreWithName[]): number => {
   return allScores.reduce((total, score) => total + (score.score ?? 0), 0);
@@ -44,7 +42,7 @@ export function Score(props: { allScores: ScoreWithName[] }) {
   }, [cachedScores]);
   return (
     <div className="my-11 px-4 text-center text-3xl">
-      <h1 className={rampart_one.className}>Score: {score}</h1>
+      <h1 className="font-sans">Score: {score}</h1>
     </div>
   );
 }
