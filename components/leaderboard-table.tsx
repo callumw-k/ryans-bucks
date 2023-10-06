@@ -58,7 +58,7 @@ export function LeaderboardTable(props: {
   }, []);
 
   return (
-    <div className="mt-11">
+    <div className="mt-11 mb-12">
       <h1 className="text-center font-sans text-3xl">Leaderboard</h1>
       <div className="mt-8  justify-center grid grid-cols-[minmax(0,12rem)_auto]">
         <p className="p-4 border border-black bg-black text-white">Team</p>
