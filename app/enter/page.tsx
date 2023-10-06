@@ -23,25 +23,43 @@ export default function LoginPage() {
   }
 
   return (
-    <form
-      onSubmit={(e) => {
-        e.preventDefault();
-        signIn();
-      }}
-    >
-      <div className="flex flex-col items-center justify-center mt-8 max-w-xl mx-auto">
-        <p>Login details are your first name, all lowercase.</p>
-        <input
-          onChange={(e) => setUsername(e.target.value)}
-          className="mt-6 rounded-none p-4 w-full max-w-xs border-y-2 border-y-black  focus:outline-none"
-          title="Username"
-          placeholder="username"
-        />
-        <button className="border-y-2 border-y-black py-2 text-xl px-6 mt-8">
-          ENTER
-        </button>
-        {error && <p className="mt-4">{error}</p>}
+    <>
+      <div className="text-center space-y-4 max-w-sm mx-auto mt-11">
+        <p className="text-xl">
+          As the flood’s close in, 23 weary animals make their way to...
+        </p>
+        <p className="text-4xl mt-6">RYAN’S ARK</p>
+        <p className="text-xl">
+          What a journey it’s been. The animals decide to quench their thirst
+          along the way and play a little game.
+        </p>
+        <p className="text-xl">They called it...</p>
+        <p className="text-4xl">PUB GOLF</p>
       </div>
-    </form>
+      <form
+        onSubmit={(e) => {
+          e.preventDefault();
+          signIn();
+        }}
+      >
+        <div className="flex items-center justify-center mt-16 max-w-xl mx-auto">
+          <input
+            onChange={(e) => setUsername(e.target.value)}
+            className="rounded-none text-xl p-4 w-full max-w-[10rem] border-2 border-black  focus:outline-none text-center mr-2"
+            title="Username"
+            placeholder="USERNAME"
+          />
+          <button className="border-2 border-black py-4 text-xl px-6 ">
+            ENTER
+          </button>
+        </div>
+        <div className="text-center">
+          {error && <p className="mt-4">{error}</p>}
+          <p className="mt-4">
+            Login details are your first name all lowercase.
+          </p>
+        </div>
+      </form>
+    </>
   );
 }
