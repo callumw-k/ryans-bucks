@@ -24,9 +24,9 @@ export default function LoginPage() {
 
   return (
     <>
-      <div className="text-center space-y-4 max-w-sm mx-auto mt-11">
+      <div className="text-center space-y-12 max-w-sm mx-auto mt-11">
         <p className="text-xl">
-          As the flood’s close in, 23 weary animals make their way to...
+          As the flood’s close in, 20ish weary animals make their way to...
         </p>
         <p className="text-4xl mt-6">RYAN’S ARK</p>
         <p className="text-xl">
