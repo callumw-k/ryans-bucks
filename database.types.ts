@@ -138,12 +138,15 @@ export interface Database {
       Teams: {
         Row: {
           id: number
+          team_name: string
         }
         Insert: {
           id?: number
+          team_name: string
         }
         Update: {
           id?: number
+          team_name?: string
         }
         Relationships: []
       }

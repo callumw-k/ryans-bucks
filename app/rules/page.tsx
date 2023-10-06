@@ -1,7 +1,8 @@
 export default function RulesPage() {
   return (
-    <div className="text-center mt-8">
-      <ol className="space-y-4">
+    <div className="text-center mt-11">
+      <h1 className="font-sans text-3xl text-center">Rules</h1>
+      <ol className="space-y-4 mt-8">
         <li>
           Spilling (of any sort) on yourself.
           <br /> <strong>+1</strong>
