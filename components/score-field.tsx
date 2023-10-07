@@ -4,6 +4,13 @@ import { Tables } from "@/database-helpers.types";
 import { supabase } from "@/lib/supabase";
 import { ScoreWithName } from "./card";
 
+
+function getRandomInt(min, max) {
+    min = Math.ceil(min);
+    max = Math.floor(max);
+    return Math.floor(Math.random() * (max - min + 1)) + min;
+}
+
 export const Field = (props: {
   title: string;
   value?: number;
@@ -67,7 +74,7 @@ export const ScoreField = (props: {
       .channel(
         `realtime_scores_${props.pub_id}_${props.score.person_id}_${
           player.score_id ?? ""
-        }_${props.drink_id}`,
+        }_${props.drink_id + getRandomInt(0,5000)}`,
       )
       .on(
         `postgres_changes`,
