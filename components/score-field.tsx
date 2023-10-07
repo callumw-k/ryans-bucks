@@ -11,6 +11,15 @@ function getRandomInt(min:number, max:number) {
     return Math.floor(Math.random() * (max - min + 1)) + min;
 }
 
+
+function generateUUID(): string {
+    return 'xxxxxxxx-xxxx-4xxx-yxxx-xxxxxxxxxxxx'.replace(/[xy]/g, function(c) {
+        const r = Math.random() * 16 | 0,
+              v = c === 'x' ? r : (r & 0x3 | 0x8);
+        return v.toString(16);
+    });
+}
+
 export const Field = (props: {
   title: string;
   value?: number;
@@ -72,7 +81,7 @@ export const ScoreField = (props: {
   useEffect(() => {
     const channel = supabase
       .channel(
-        `realtime_scores_${props.pub_id}_${props.score.person_id}_${
+        `${generateUUID()}_scores_${props.pub_id}_${props.score.person_id}_${
           player.score_id ?? ""
         }_${props.drink_id + getRandomInt(0,5000)}`,
       )
