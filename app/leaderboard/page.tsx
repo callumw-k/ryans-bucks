@@ -17,7 +17,7 @@ export default async function LeaderboardPage() {
       });
       return { id: team.id, team_name: team.team_name, totalScore };
     })
-    .sort((a, b) => b.totalScore - a.totalScore);
+    .sort((a, b) => a.totalScore - b.totalScore);
 
   return <LeaderboardTable data={mappedData} />;
 }
