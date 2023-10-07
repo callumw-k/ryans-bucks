@@ -119,6 +119,7 @@ export const ScoreField = (props: {
     <div className="grid gap-[0.75rem] grid-cols-1">
       <p className={`m-0 italic text-center`}>{player.name}</p>
       <input
+type="number"
         value={player.score}
         onChange={(e) => {
           const newScore = e.target.value ? parseInt(e.target.value) : "";
